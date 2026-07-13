@@ -5,8 +5,11 @@ import com.br.intellecti.dto.login.LoginRequest;
 import com.br.intellecti.dto.login.LoginResponse;
 import com.br.intellecti.dto.register.student.StudentRequestDTO;
 import com.br.intellecti.dto.register.student.StudentResponseDTO;
+import com.br.intellecti.dto.register.teacher.TeacherRequestDTO;
+import com.br.intellecti.dto.register.teacher.TeacherResponseDTO;
 import com.br.intellecti.models.enums.Role;
 import com.br.intellecti.models.users.Student;
+import com.br.intellecti.models.users.Teacher;
 import com.br.intellecti.models.users.User;
 import com.br.intellecti.repository.StudentRepository;
 import com.br.intellecti.repository.UserRepository;
@@ -74,5 +77,27 @@ public class AuthService {
                 student.getUser().getEmail()
         );
     }
+
+    public TeacherResponseDTO registerTeacher(TeacherRequestDTO teacherRequestDTO){
+        if(userRepository.findByEmail(teacherRequestDTO.email()).isPresent()){
+            throw new RuntimeException("Email already exists");
+        }
+
+        User user = new User();
+        user.setUsername(teacherRequestDTO.username());
+        user.setEmail(teacherRequestDTO.email());
+        user.setPassword(passwordEncoder.encode(teacherRequestDTO.password()));
+        user.setRole(Role.ROLE_TEACHER);
+        user.setCreatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        Teacher teacher = new Teacher();
+        teacher.setUser(user);
+        return new TeacherResponseDTO(
+                teacher.getUser().getUsername(),
+                teacher.getUser().getEmail()
+        );
+    }
+
 
 }
