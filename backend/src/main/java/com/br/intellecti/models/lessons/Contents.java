@@ -24,13 +24,10 @@ public class Contents {
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
-    @Column(name = "correct_answer")
-    private String correctAnswer;
-
-    @Column(columnDefinition = "TEXT")
-    private String explanation;
-
-    private Integer points;
+    @OneToOne(mappedBy = "contents",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Question question;;
 
     public UUID getId() {
         return id;
@@ -72,27 +69,11 @@ public class Contents {
         this.orderIndex = orderIndex;
     }
 
-    public String getCorrectAnswer() {
-        return correctAnswer;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-
-    public String getExplanation() {
-        return explanation;
-    }
-
-    public void setExplanation(String explanation) {
-        this.explanation = explanation;
-    }
-
-    public Integer getPoints() {
-        return points;
-    }
-
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 }

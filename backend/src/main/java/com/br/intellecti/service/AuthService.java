@@ -12,6 +12,7 @@ import com.br.intellecti.models.users.Student;
 import com.br.intellecti.models.users.Teacher;
 import com.br.intellecti.models.users.User;
 import com.br.intellecti.repository.StudentRepository;
+import com.br.intellecti.repository.TeacherRepository;
 import com.br.intellecti.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,13 +29,15 @@ public class AuthService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
 
-    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
     }
 
     public LoginResponse login(LoginRequest loginRequest){
@@ -93,6 +96,7 @@ public class AuthService {
 
         Teacher teacher = new Teacher();
         teacher.setUser(user);
+        teacherRepository.save(teacher);
         return new TeacherResponseDTO(
                 teacher.getUser().getUsername(),
                 teacher.getUser().getEmail()
