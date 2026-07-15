@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useInRouterContext, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { loginUser, type LoginRequest } from "../services/authService";
+import { AUTH_ROLES, LOCAL_STORAGE_KEYS, normalizeRole } from "../constants/auth";
 
 interface DecodedToken {
   role?: string;
@@ -31,16 +32,18 @@ export function useLogin(navigateOverride?: (path: string) => void) {
       const data = await loginUser(formData);
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("username", data.username);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, data.token);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USERNAME, data.username);
 
         const decoded: DecodedToken = jwtDecode(data.token);
-        const userRole = decoded.role || (decoded.roles && decoded.roles[0]) || "";
-        localStorage.setItem("role", userRole);
+        const userRole = normalizeRole(decoded.role || (decoded.roles && decoded.roles[0]) || "");
+        if (userRole) {
+          localStorage.setItem(LOCAL_STORAGE_KEYS.ROLE, userRole);
+        }
 
-        if (userRole === "ROLE_STUDENT") {
+        if (userRole === AUTH_ROLES.STUDENT) {
           navigate?.("/student/home");
-        } else if (userRole === "ROLE_TEACHER") {
+        } else if (userRole === AUTH_ROLES.TEACHER) {
           navigate?.("/teacher/home");
         } else {
           alert("Usuário não possui uma role válida de acesso.");

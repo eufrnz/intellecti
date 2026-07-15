@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import type { NavigationProps } from '../../App';
 import { countMyStudyPlans, fetchStudyPlans } from '../../services/lessonService';
+import { THEME_COLORS } from '../../constants/theme';
 
 const completionData = [
   { month: 'Jan', completed: 65, assigned: 80 },
@@ -116,8 +117,8 @@ export function TeacherDashboard({ navigate }: NavigationProps) {
         </div>
         <button
           onClick={() => navigate('teacher/create-plan')}
-          className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm shadow-lg shadow-[#1E88E5]/20 hover:opacity-90 transition-opacity"
-          style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)', fontWeight: 600}}
+          className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm hover:opacity-90 transition-opacity"
+          style={{background: THEME_COLORS.primaryLight, fontWeight: 600, boxShadow: '0 8px 24px rgba(66,165,245,0.12)'}}
         >
           <BookOpen className="w-4 h-4"/>
           New Study Plan

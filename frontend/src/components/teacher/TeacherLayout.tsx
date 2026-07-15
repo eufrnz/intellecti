@@ -12,6 +12,7 @@ import { Students } from './Students';
 import { Analytics } from './Analytics';
 import { Profile } from '../shared/Profile';
 import { AppShellNav, getCurrentUserIdentity } from '../shared/AppShellNav';
+import { BRAND_NAME, GRADIENTS, THEME_COLORS } from '../../constants/theme';
 
 const navItems = [
   { id: 'teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -51,16 +52,16 @@ export function TeacherLayout({ currentView, navigate, params }: NavigationProps
   const activeItem = navItems.find(n => n.id === currentView || (currentView === 'teacher/create-plan' && n.id === 'teacher/study-plans'));
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: THEME_COLORS.surface }}>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 shadow-[2px_0_20px_rgba(0,0,0,0.04)] z-20">
         <AppShellNav
           items={navItems}
           currentView={currentView}
           onNavigate={navigate}
-          title="LinguaPath"
+          title={BRAND_NAME}
           subtitle="Teacher Portal"
-          accent="#1E88E5"
+          accent={THEME_COLORS.blue}
           isActiveItem={(id, view) => view === id || (view === 'teacher/create-plan' && id === 'teacher/study-plans')}
         />
       </aside>
@@ -85,10 +86,10 @@ export function TeacherLayout({ currentView, navigate, params }: NavigationProps
             >
               <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)'}}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background: GRADIENTS.brand}}>
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
-                  <span style={{fontWeight: 700, color: '#111827'}}>LinguaPath</span>
+                  <span style={{fontWeight: 700, color: THEME_COLORS.text}}>{BRAND_NAME}</span>
                 </div>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#6B7280]">
                   <X className="w-5 h-5" />
@@ -126,12 +127,13 @@ export function TeacherLayout({ currentView, navigate, params }: NavigationProps
           </button>
 
           <div className="flex-1">
-            <div className="relative max-w-xs hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+              <div className="relative max-w-xs hidden sm:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: THEME_COLORS.muted}} />
               <input
                 type="text"
                 placeholder="Search..."
-                className="w-full pl-9 pr-4 py-2 text-sm bg-[#F8FAFC] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5] transition-all"
+                className="w-full pl-9 pr-4 py-2 text-sm bg-[#F8FAFC] border rounded-xl focus:outline-none transition-all"
+                style={{ borderColor: THEME_COLORS.border, backgroundColor: THEME_COLORS.surface, color: THEME_COLORS.text }}
               />
             </div>
             <div className="sm:hidden">
@@ -154,7 +156,7 @@ export function TeacherLayout({ currentView, navigate, params }: NavigationProps
             <button
               onClick={() => navigate('teacher/profile')}
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ml-1"
-              style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)', fontWeight: 700}}
+              style={{background: GRADIENTS.brand, fontWeight: 700}}
             >
               {initials}
             </button>

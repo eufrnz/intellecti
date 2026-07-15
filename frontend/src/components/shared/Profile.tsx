@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Camera, Bell, Globe, Shield, LogOut, ChevronRight, Award, BookOpen, Star, Flame, Edit2, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import type { NavigationProps } from '../../App';
+import { BRAND_NAME, GRADIENTS, THEME_COLORS } from '../../constants/theme';
 
 interface ProfileProps extends NavigationProps {
   role: 'teacher' | 'student';
@@ -10,11 +11,11 @@ interface ProfileProps extends NavigationProps {
 
 const teacherInfo = {
   name: 'Sarah Miller',
-  email: 'sarah.miller@linguapath.com',
+  email: 'sarah.miller@intellecti.com',
   username: 'smiller_teacher',
   role: 'English Teacher',
   avatar: 'S',
-  color: '#1E88E5',
+  color: THEME_COLORS.blue,
   joined: 'January 2024',
   bio: 'Passionate English teacher with 8+ years of experience specializing in Business English and IELTS preparation.',
   stats: [
@@ -26,11 +27,11 @@ const teacherInfo = {
 
 const studentInfo = {
   name: 'Alex Johnson',
-  email: 'alex.johnson@email.com',
+  email: 'alex.johnson@intellecti.com',
   username: 'alexj_learner',
   role: 'English Student · B1 Level',
   avatar: 'A',
-  color: '#42A5F5',
+  color: THEME_COLORS.blueDark,
   joined: 'March 2024',
   bio: 'Business professional learning English for career advancement. Aiming for C1 by end of year.',
   stats: [
@@ -99,7 +100,7 @@ export function Profile({ role, navigate }: ProfileProps) {
       {/* Profile header card */}
       <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-50">
         {/* Banner */}
-        <div className="h-24 relative" style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)'}}>
+        <div className="h-24 relative" style={{background: GRADIENTS.brand}}>
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-3 left-8 w-16 h-16 rounded-full bg-white"/>
             <div className="absolute top-1 right-12 w-24 h-24 rounded-full bg-white"/>
@@ -123,9 +124,9 @@ export function Profile({ role, navigate }: ProfileProps) {
               onClick={() => editing ? handleSave() : setEditing(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all"
               style={{
-                borderColor: editing ? '#22C55E' : '#E5E7EB',
-                background: editing ? '#F0FDF4' : 'white',
-                color: editing ? '#22C55E' : '#6B7280',
+                borderColor: editing ? '#22C55E' : THEME_COLORS.border,
+                background: editing ? '#F0FDF4' : THEME_COLORS.white,
+                color: editing ? '#22C55E' : THEME_COLORS.muted,
                 fontWeight: 500
               }}
             >
@@ -133,19 +134,19 @@ export function Profile({ role, navigate }: ProfileProps) {
             </button>
           </div>
 
-          <h1 className="text-xl" style={{fontWeight: 700, color: '#111827'}}>{info.name}</h1>
-          <p className="text-sm text-[#6B7280]">@{info.username} · {info.role}</p>
+          <h1 className="text-xl" style={{fontWeight: 700, color: THEME_COLORS.text}}>{info.name}</h1>
+          <p className="text-sm" style={{color: THEME_COLORS.muted}}>@{info.username} · {info.role}</p>
 
           {editing ? (
             <textarea
               value={bio}
               onChange={e => setBio(e.target.value)}
               rows={3}
-              className="w-full mt-3 px-3 py-2 rounded-xl border border-[#1E88E5] bg-[#F8FAFC] focus:outline-none text-sm resize-none"
-              style={{color: '#374151'}}
+              className="w-full mt-3 px-3 py-2 rounded-xl border bg-[#F8FAFC] focus:outline-none text-sm resize-none"
+              style={{color: THEME_COLORS.text, borderColor: THEME_COLORS.border, backgroundColor: THEME_COLORS.surface}}
             />
           ) : (
-            <p className="text-sm text-[#6B7280] mt-2" style={{lineHeight: 1.6}}>{bio}</p>
+            <p className="text-sm mt-2" style={{lineHeight: 1.6, color: THEME_COLORS.muted}}>{bio}</p>
           )}
 
           <div className="flex items-center gap-1.5 mt-2 text-xs text-[#9CA3AF]">

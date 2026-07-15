@@ -6,6 +6,7 @@ import { useLogin } from '../../hooks/useLogin';
 import { useRegisterStudent } from '../../hooks/useRegisterStudent';
 import { useRegisterTeacher } from '../../hooks/useRegisterTeacher';
 import type { NavigationProps } from '../../App';
+import { BRAND_NAME, GRADIENTS, THEME_COLORS } from '../../constants/theme';
 
 interface AuthPagesProps extends NavigationProps {
   setUserRole: (role: 'teacher' | 'student') => void;
@@ -154,13 +155,13 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
     void handleTeacherSubmit(e);
   };
 
-  const inputClass = `w-full px-4 py-3 rounded-xl border border-gray-200 bg-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1E88E5] focus:border-transparent transition-all text-[#111827] placeholder-[#9CA3AF]`;
+  const inputClass = 'w-full px-4 py-3 rounded-xl border placeholder:text-[#6C6C8C] focus:outline-none transition-all';
 
   if (currentView === 'login') {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex">
+      <div className="min-h-screen flex" style={{ backgroundColor: THEME_COLORS.surface }}>
         {/* Left illustration panel - desktop only */}
-        <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-[#1E88E5] to-[#1565C0] items-center justify-center p-12 relative overflow-hidden">
+        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative overflow-hidden" style={{ background: GRADIENTS.brand }}>
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white"/>
             <div className="absolute bottom-20 right-10 w-48 h-48 rounded-full bg-white"/>
@@ -171,7 +172,7 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
               <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
-              <span className="text-white text-2xl" style={{fontWeight: 700}}>LinguaPath</span>
+              <span className="text-white text-2xl" style={{fontWeight: 700}}>{BRAND_NAME}</span>
             </div>
             <LoginIllustration />
             <h2 className="text-white text-2xl mt-8 mb-3" style={{fontWeight: 700}}>Master English Together</h2>
@@ -200,15 +201,15 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
           >
             {/* Mobile logo */}
             <div className="flex items-center gap-3 mb-8 lg:hidden">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)'}}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background: GRADIENTS.brand}}>
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl" style={{fontWeight: 700, color: '#111827'}}>LinguaPath</span>
+              <span className="text-xl" style={{fontWeight: 700, color: THEME_COLORS.text}}>{BRAND_NAME}</span>
             </div>
 
             <div className="mb-8">
-              <h1 className="text-3xl mb-2" style={{fontWeight: 700, color: '#111827'}}>Welcome back</h1>
-              <p className="text-[#6B7280]">Sign in to continue your learning journey</p>
+              <h1 className="text-3xl mb-2" style={{fontWeight: 700, color: THEME_COLORS.text}}>Welcome back</h1>
+              <p className="text-sm" style={{color: THEME_COLORS.muted}}>Sign in to continue your learning journey</p>
             </div>
 
             {/* Demo quick login buttons */}
@@ -223,8 +224,8 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                   handleLoginChange({ target: { name: 'password', value: demoPassword } } as React.ChangeEvent<HTMLInputElement>);
                   void handleLoginSubmit(syntheticEvent);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#1E88E5]/20 bg-[#1E88E5]/5 text-[#1E88E5] hover:bg-[#1E88E5]/10 transition-colors text-sm"
-                style={{fontWeight: 500}}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors text-sm"
+                style={{fontWeight: 500, borderColor: `${THEME_COLORS.blue}33`, backgroundColor: `${THEME_COLORS.blue}10`, color: THEME_COLORS.blue}}
               >
                 <GraduationCap className="w-4 h-4" />
                 Teacher Demo
@@ -239,25 +240,25 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                   handleLoginChange({ target: { name: 'password', value: demoPassword } } as React.ChangeEvent<HTMLInputElement>);
                   void handleLoginSubmit(syntheticEvent);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#42A5F5]/20 bg-[#42A5F5]/5 text-[#42A5F5] hover:bg-[#42A5F5]/10 transition-colors text-sm"
-                style={{fontWeight: 500}}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors text-sm"
+                style={{fontWeight: 500, borderColor: `${THEME_COLORS.red}33`, backgroundColor: `${THEME_COLORS.red}15`, color: THEME_COLORS.red}}
               >
                 <User className="w-4 h-4" />
                 Student Demo
               </button>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-gray-200"/>
-              <span className="text-[#9CA3AF] text-sm">or sign in with email</span>
-              <div className="flex-1 h-px bg-gray-200"/>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
+                <span className="text-sm" style={{color: THEME_COLORS.muted}}>or sign in with email</span>
+                <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm mb-1.5" style={{fontWeight: 500, color: '#374151'}}>Username</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]"/>
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: THEME_COLORS.muted}} />
                   <input
                     type="text"
                     name="username"
@@ -265,6 +266,7 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                     value={loginFormData.username}
                     onChange={handleLoginChange}
                     className={inputClass + ' pl-10'}
+                    style={{ backgroundColor: THEME_COLORS.surface, color: THEME_COLORS.text, borderColor: THEME_COLORS.border }}
                   />
                 </div>
               </div>
@@ -272,10 +274,10 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-sm" style={{fontWeight: 500, color: '#374151'}}>Password</label>
-                  <button type="button" className="text-sm text-[#1E88E5] hover:underline" style={{fontWeight: 500}}>Forgot password?</button>
+                  <button type="button" className="text-sm hover:underline" style={{fontWeight: 500, color: THEME_COLORS.blue}}>Forgot password?</button>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]"/>
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: THEME_COLORS.muted}} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
@@ -283,6 +285,7 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                     value={loginFormData.password}
                     onChange={handleLoginChange}
                     className={inputClass + ' pl-10 pr-10'}
+                    style={{ backgroundColor: THEME_COLORS.surface, color: THEME_COLORS.text, borderColor: THEME_COLORS.border }}
                   />
                   <button
                     type="button"
@@ -297,18 +300,18 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
               <button
                 type="submit"
                 disabled={loginIsLoading}
-                className="w-full py-3.5 rounded-xl text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-lg shadow-[#1E88E5]/20 mt-2 disabled:cursor-not-allowed disabled:opacity-70"
-                style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)', fontWeight: 600}}
+                className="w-full py-3.5 rounded-xl text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-lg mt-2 disabled:cursor-not-allowed disabled:opacity-70"
+                style={{background: GRADIENTS.brand, fontWeight: 600, boxShadow: `0 18px 32px ${THEME_COLORS.blue}20`}}
               >
                 {loginIsLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
 
-            <p className="text-center text-[#6B7280] text-sm mt-6">
+            <p className="text-center text-sm mt-6" style={{color: THEME_COLORS.muted}}>
               Don't have an account?{' '}
               <button
                 onClick={() => navigate('register')}
-                className="text-[#1E88E5] hover:underline"
+                className="hover:underline"
                 style={{fontWeight: 600}}
               >
                 Create account
@@ -322,17 +325,17 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
 
   // Register page
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: THEME_COLORS.surface }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
         <div className="flex items-center gap-3 mb-8 justify-center">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)'}}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background: GRADIENTS.brand}}>
             <BookOpen className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl" style={{fontWeight: 700, color: '#111827'}}>LinguaPath</span>
+          <span className="text-xl" style={{fontWeight: 700, color: THEME_COLORS.text}}>{BRAND_NAME}</span>
         </div>
 
         {/* Steps indicator */}
@@ -363,8 +366,8 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
               exit={{ opacity: 0, x: -20 }}
               className="text-center"
             >
-              <h1 className="text-3xl mb-2" style={{fontWeight: 700, color: '#111827'}}>Join LinguaPath</h1>
-              <p className="text-[#6B7280] mb-8">Choose your role to get started</p>
+              <h1 className="text-3xl mb-2" style={{fontWeight: 700, color: THEME_COLORS.text}}>Join {BRAND_NAME}</h1>
+              <p className="text-sm mb-8" style={{color: THEME_COLORS.muted}}>Choose your role to get started</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
                 {[
@@ -373,8 +376,8 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                     icon: GraduationCap,
                     title: 'Teacher',
                     desc: 'Create study plans, manage students, track progress',
-                    color: '#1E88E5',
-                    bg: '#EFF6FF',
+                    color: THEME_COLORS.blue,
+                    bg: `${THEME_COLORS.blue}15`,
                     features: ['Create study plans', 'Assign lessons & quizzes', 'Track student progress', 'View analytics'],
                   },
                   {
@@ -382,8 +385,8 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                     icon: BookOpen,
                     title: 'Student',
                     desc: 'Access lessons, complete assignments, track your progress',
-                    color: '#42A5F5',
-                    bg: '#F0F9FF',
+                    color: THEME_COLORS.blueDark,
+                    bg: `${THEME_COLORS.blueDark}10`,
                     features: ['Access assignments', 'Complete lessons & quizzes', 'Track your progress', 'View grades'],
                   },
                 ].map(({ role, icon: Icon, title, desc, color, bg, features }) => (

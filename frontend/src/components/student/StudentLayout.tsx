@@ -64,16 +64,16 @@ export function StudentLayout({ currentView, navigate, params }: NavigationProps
   }
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
+    <div className="flex h-screen" style={{ background: THEME_COLORS.surface }}>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 shadow-[2px_0_20px_rgba(0,0,0,0.04)] z-20">
         <AppShellNav
           items={sideNavItems}
           currentView={currentView}
           onNavigate={navigate}
-          title="LinguaPath"
+          title={BRAND_NAME}
           subtitle="Student Portal"
-          accent="#42A5F5"
+          accent={THEME_COLORS.blue}
           isActiveItem={(id, view) => view === id ||
             (view === 'student/grades' && id === 'student/progress') ||
             (['student/lesson', 'student/quiz', 'student/exercise'].includes(view) && id === 'student/assignment')}
@@ -96,10 +96,10 @@ export function StudentLayout({ currentView, navigate, params }: NavigationProps
             >
               <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background: 'linear-gradient(135deg, #1E88E5, #42A5F5)'}}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background: GRADIENTS.brand}}>
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
-                  <span style={{fontWeight: 700, color: '#111827'}}>LinguaPath</span>
+                  <span style={{fontWeight: 700, color: THEME_COLORS.text}}>{BRAND_NAME}</span>
                 </div>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#6B7280]">
                   <X className="w-5 h-5" />
@@ -157,12 +157,13 @@ export function StudentLayout({ currentView, navigate, params }: NavigationProps
           </button>
           <div className="flex-1">
             <div className="relative max-w-xs hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <input
-                type="text"
-                placeholder="Search lessons..."
-                className="w-full pl-9 pr-4 py-2 text-sm bg-[#F8FAFC] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5] transition-all"
-              />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: THEME_COLORS.muted}} />
+                <input
+                  type="text"
+                  placeholder="Search lessons..."
+                  className="w-full pl-9 pr-4 py-2 text-sm rounded-xl focus:outline-none transition-all"
+                  style={{ borderColor: THEME_COLORS.border, backgroundColor: THEME_COLORS.surface, color: THEME_COLORS.text }}
+                />
             </div>
             <div className="sm:hidden">
               <div className="text-sm" style={{fontWeight: 600, color: '#111827'}}>
@@ -174,9 +175,9 @@ export function StudentLayout({ currentView, navigate, params }: NavigationProps
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#F8FAFC] text-[#6B7280]">
+            <button className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#F8FAFC]" style={{color: THEME_COLORS.muted}}>
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{background: '#EF4444'}}/>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{background: THEME_COLORS.red}}/>
             </button>
             <button
               onClick={() => navigate('student/profile')}

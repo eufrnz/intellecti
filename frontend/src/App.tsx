@@ -17,48 +17,51 @@ export interface NavigationProps {
   params?: Record<string, unknown>;
 }
 
-const teacherViews = ['teacher/dashboard', 'teacher/study-plans', 'teacher/create-plan', 'teacher/assignments', 'teacher/students', 'teacher/analytics', 'teacher/profile'] as const;
-const studentViews = ['student/dashboard', 'student/assignment', 'student/lesson', 'student/quiz', 'student/exercise', 'student/progress', 'student/grades', 'student/profile'] as const;
+import { AUTH_ROLES, DEFAULT_VIEWS, LOCAL_STORAGE_KEYS, PUBLIC_VIEWS, VIEW_GROUPS, isStudentRole, isTeacherRole, normalizeRole } from './constants/auth';
 
 function getInitialView(): AppView {
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role')?.toUpperCase();
-  const savedView = localStorage.getItem('currentView') as AppView | null;
+  const token = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+  const role = normalizeRole(localStorage.getItem(LOCAL_STORAGE_KEYS.ROLE));
+  const savedView = localStorage.getItem(LOCAL_STORAGE_KEYS.CURRENT_VIEW) as AppView | null;
 
   if (!token || !role) {
-    return 'login';
+    return PUBLIC_VIEWS.LOGIN;
   }
 
-  if (role.includes('TEACHER')) {
-    return savedView && teacherViews.includes(savedView as any) ? savedView : 'teacher/dashboard';
+  if (isTeacherRole(role)) {
+    return savedView && VIEW_GROUPS.TEACHER_VIEWS.includes(savedView as any)
+      ? savedView
+      : DEFAULT_VIEWS.TEACHER;
   }
 
-  if (role.includes('STUDENT')) {
-    return savedView && studentViews.includes(savedView as any) ? savedView : 'student/dashboard';
+  if (isStudentRole(role)) {
+    return savedView && VIEW_GROUPS.STUDENT_VIEWS.includes(savedView as any)
+      ? savedView
+      : DEFAULT_VIEWS.STUDENT;
   }
 
-  return 'login';
+  return PUBLIC_VIEWS.LOGIN;
 }
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>(getInitialView);
   const [userRole, setUserRole] = useState<'teacher' | 'student' | null>(() => {
-    const role = localStorage.getItem('role')?.toUpperCase();
-    if (role?.includes('TEACHER')) return 'teacher';
-    if (role?.includes('STUDENT')) return 'student';
+    const role = normalizeRole(localStorage.getItem(LOCAL_STORAGE_KEYS.ROLE));
+    if (isTeacherRole(role)) return 'teacher';
+    if (isStudentRole(role)) return 'student';
     return null;
   });
   const [navParams, setNavParams] = useState<Record<string, unknown>>({});
 
   const navigate = (view: AppView, params?: Record<string, unknown>) => {
-    if (view === 'login' || view === 'register') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('role');
-      localStorage.removeItem('currentView');
+    if (view === PUBLIC_VIEWS.LOGIN || view === PUBLIC_VIEWS.REGISTER) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.USERNAME);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ROLE);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.CURRENT_VIEW);
       setUserRole(null);
     } else {
-      localStorage.setItem('currentView', view);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.CURRENT_VIEW, view);
     }
 
     setCurrentView(view);
