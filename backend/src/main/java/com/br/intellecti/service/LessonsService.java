@@ -15,7 +15,6 @@ import com.br.intellecti.repository.DaysRepository;
 import com.br.intellecti.repository.StudyPlanRepository;
 import com.br.intellecti.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -93,6 +92,11 @@ public class LessonsService {
        StudyPlans studyPlan = studyPlanRepository.findById(studyPlanId)
                .orElseThrow(() -> new RuntimeException("Study plan not found."));
        return studyPlanMapper.toDTO(studyPlan);
+    }
+
+    public int countStudyPlans(String username){
+        List<StudyPlans> studyPlan = studyPlanRepository.findByTeacherUserUsername(username);
+        return studyPlan.size();
     }
 
 

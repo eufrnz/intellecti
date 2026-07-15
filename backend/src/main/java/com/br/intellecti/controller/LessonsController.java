@@ -54,4 +54,13 @@ public class LessonsController {
     public StudyPlanResponseDTO getStudyPlansById(@PathVariable UUID studyPlanId){
         return studyPlanService.getStudyPlansById(studyPlanId);
     }
+
+    @GetMapping("/count-my-lessons")
+    public int countStudyPlans(@AuthenticationPrincipal JWTUserData userData){
+        if(userData == null){
+            throw new RuntimeException("User not found.");
+        }
+        String teacherLogged = userData.username();
+        return studyPlanService.countStudyPlans(teacherLogged);
+    }
 }
