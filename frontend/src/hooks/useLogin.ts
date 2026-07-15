@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useInRouterContext, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { loginUser, type LoginRequest } from "../services/authService";
 
@@ -9,8 +9,9 @@ interface DecodedToken {
   sub?: string;
 }
 
-export function useLogin() {
-  const navigate = useNavigate();
+export function useLogin(navigateOverride?: (path: string) => void) {
+  const routerNavigate = useInRouterContext() ? useNavigate() : undefined;
+  const navigate = navigateOverride ?? routerNavigate;
   const [formData, setFormData] = useState<LoginRequest>({
     username: "",
     password: "",
@@ -35,14 +36,15 @@ export function useLogin() {
 
         const decoded: DecodedToken = jwtDecode(data.token);
         const userRole = decoded.role || (decoded.roles && decoded.roles[0]) || "";
+        localStorage.setItem("role", userRole);
 
         if (userRole === "ROLE_STUDENT") {
-          navigate("/student/home");
+          navigate?.("/student/home");
         } else if (userRole === "ROLE_TEACHER") {
-          navigate("/teacher/home");
+          navigate?.("/teacher/home");
         } else {
           alert("Usuário não possui uma role válida de acesso.");
-          navigate("/");
+          navigate?.("/");
         }
       } else {
         alert("Erro: Token não recebido do servidor.");

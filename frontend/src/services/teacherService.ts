@@ -4,8 +4,10 @@ export interface TeacherRequest {
   password: string;
 }
 
+import { AUTH_BASE_URL } from './api';
+
 export async function registerTeacher(teacherData: TeacherRequest): Promise<void> {
-  const response = await fetch("http://localhost:8080/api/auth/register/teacher", {
+  const response = await fetch(`${AUTH_BASE_URL}/register/teacher`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
