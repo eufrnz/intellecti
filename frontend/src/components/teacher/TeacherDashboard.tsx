@@ -7,6 +7,7 @@ import {
 import type { NavigationProps } from '../../App';
 import { countMyStudyPlans, fetchStudyPlans } from '../../services/lessonService';
 import { THEME_COLORS } from '../../constants/theme';
+import { fetchAllStudents, type StudentResponse } from '../../services/assignmentService';
 
 const completionData = [
   { month: 'Jan', completed: 65, assigned: 80 },
@@ -51,7 +52,7 @@ const topStudents = [
 interface StatCardProps {
   icon: React.ElementType;
   label: string;
-  value: string;
+  value: string | number;
   change: string;
   positive: boolean;
   color: string;
@@ -103,6 +104,21 @@ export function TeacherDashboard({ navigate }: NavigationProps) {
     void loadData();
   }, []);
 
+  const [students, setStudents] = useState<StudentResponse[]>([]);
+
+
+  useEffect(() => {
+ const getStudents = async () => {
+    try {
+      const studentsToCount = await fetchAllStudents();
+      setStudents(studentsToCount);
+    } catch (error) {
+      console.error("Erro ao carregar estudantes:", error);
+    }
+  };
+  void getStudents();
+  }, [])
+
   const username = useMemo(() => localStorage.getItem('username') || 'Professor', []);
 
   return (
@@ -127,7 +143,7 @@ export function TeacherDashboard({ navigate }: NavigationProps) {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        <StatCard icon={Users} label="Total Students" value="248" change="+12%" positive={true} color="#1E88E5" bg="#EFF6FF"/>
+        <StatCard icon={Users} label="Total Students" value={students.length} change="+12%" positive={true} color="#1E88E5" bg="#EFF6FF"/>
         <StatCard icon={BookOpen} label="Study Plans" value={loading ? '...' : String(studyPlanCount)} change="+2" positive={true} color="#42A5F5" bg="#F0F9FF"/>
         <StatCard icon={ClipboardList} label="Assignments" value={String(plansCount)} change="+5" positive={true} color="#FFC107" bg="#FFFBEB"/>
         <StatCard icon={TrendingUp} label="Completion Rate" value="78%" change="+3%" positive={true} color="#22C55E" bg="#F0FDF4"/>
