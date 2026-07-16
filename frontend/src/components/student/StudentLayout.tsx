@@ -7,6 +7,7 @@ import { AssignmentScreen } from './AssignmentScreen';
 import { ProgressScreen } from './ProgressScreen';
 import { Profile } from '../shared/Profile';
 import { AppShellNav, getCurrentUserIdentity } from '../shared/AppShellNav';
+import { BRAND_NAME, GRADIENTS, THEME_COLORS } from '../../constants/theme';
 
 const bottomNavItems = [
   { id: 'student/dashboard', label: 'Home', icon: Home },

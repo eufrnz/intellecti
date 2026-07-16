@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Users, BookOpen, ClipboardList, TrendingUp, Clock, CheckCircle, AlertCircle, ArrowRight, Flame, Star } from 'lucide-react';
+import { Users, BookOpen, ClipboardList, TrendingUp, ArrowRight, Flame, Star } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area
