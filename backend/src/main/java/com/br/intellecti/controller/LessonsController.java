@@ -24,7 +24,8 @@ public class LessonsController {
     }
 
     @PostMapping("/createStudyPlan")
-    public ResponseEntity<UUID> createStudyPlan(@RequestBody StudyPlanRequestDTO studyPlanRequestDTO, @AuthenticationPrincipal JWTUserData userData){
+    public ResponseEntity<UUID> createStudyPlan(@RequestBody StudyPlanRequestDTO studyPlanRequestDTO,
+                                                @AuthenticationPrincipal JWTUserData userData){
         if(userData == null) {
             throw new RuntimeException("User not found.");
         }
@@ -48,7 +49,7 @@ public class LessonsController {
 
     @GetMapping("/get-all-study-plans")
     public List<StudyPlanResponseDTO> getAllStudyPlans(){
-        return  studyPlanService.getAllStudyPlans();
+        return studyPlanService.getAllStudyPlans();
     }
     @GetMapping("/get-study-plans-by-id/{studyPlanId}")
     public StudyPlanResponseDTO getStudyPlansById(@PathVariable UUID studyPlanId){
@@ -62,5 +63,14 @@ public class LessonsController {
         }
         String teacherLogged = userData.username();
         return studyPlanService.countStudyPlans(teacherLogged);
+    }
+
+    @GetMapping("/get-my-lessons")
+    public List<StudyPlanResponseDTO> getAllMyStudyPlans(@AuthenticationPrincipal JWTUserData userData){
+        if(userData == null){
+            throw new RuntimeException("User not found.");
+        }
+        String teacherLogged = userData.username();
+        return studyPlanService.getAllMyStudyPlans(teacherLogged);
     }
 }

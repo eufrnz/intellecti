@@ -28,11 +28,13 @@ public class LessonsService {
     private final ContentRepository contentRepository;
     private final StudyPlanMapper studyPlanMapper;
 
-    public LessonsService(TeacherRepository teacherRepository, StudyPlanRepository studyPlanRepository, ContentRepository contentRepository, DaysRepository daysRepository1, StudyPlanMapper studyPlanMapper) {
+    public LessonsService(TeacherRepository teacherRepository, StudyPlanRepository studyPlanRepository,
+                          ContentRepository contentRepository, DaysRepository daysRepository,
+                          StudyPlanMapper studyPlanMapper) {
         this.teacherRepository = teacherRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.contentRepository = contentRepository;
-        this.daysRepository = daysRepository1;
+        this.daysRepository = daysRepository;
         this.studyPlanMapper = studyPlanMapper;
     }
 
@@ -99,6 +101,11 @@ public class LessonsService {
         return studyPlan.size();
     }
 
-
+    public List<StudyPlanResponseDTO> getAllMyStudyPlans(String username){
+        return studyPlanRepository.findByTeacherUserUsername(username)
+                .stream()
+                .map(studyPlanMapper::toDTO)
+                .toList();
+    }
 
 }

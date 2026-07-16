@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: intellecti
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/intellecti
+    username: ${DATABASE_NAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000
