@@ -1,4 +1,4 @@
-package com.br.intellecti.dto.assignment;
+package com.br.intellecti.dto.assignment.withStudents.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

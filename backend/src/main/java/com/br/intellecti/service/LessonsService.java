@@ -6,14 +6,13 @@ import com.br.intellecti.dto.lessons.request.DayRequestDTO;
 import com.br.intellecti.dto.lessons.request.StudyPlanRequestDTO;
 import com.br.intellecti.dto.lessons.response.StudyPlanResponseDTO;
 import com.br.intellecti.models.enums.StudyPlanStatus;
+import com.br.intellecti.models.lessons.Assignment;
 import com.br.intellecti.models.lessons.Contents;
 import com.br.intellecti.models.lessons.Days;
 import com.br.intellecti.models.lessons.StudyPlans;
 import com.br.intellecti.models.users.Teacher;
-import com.br.intellecti.repository.ContentRepository;
-import com.br.intellecti.repository.DaysRepository;
-import com.br.intellecti.repository.StudyPlanRepository;
-import com.br.intellecti.repository.TeacherRepository;
+import com.br.intellecti.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,15 +26,21 @@ public class LessonsService {
     private final DaysRepository daysRepository;
     private final ContentRepository contentRepository;
     private final StudyPlanMapper studyPlanMapper;
+    private final AssignmentRepository assignmentRepository;
+    private final AssignmentService assignmentService;
+    private final AssignmentStudentRepository assignmentStudentRepository;
 
     public LessonsService(TeacherRepository teacherRepository, StudyPlanRepository studyPlanRepository,
                           ContentRepository contentRepository, DaysRepository daysRepository,
-                          StudyPlanMapper studyPlanMapper) {
+                          StudyPlanMapper studyPlanMapper, AssignmentRepository assignmentRepository, AssignmentService assignmentService, AssignmentStudentRepository assignmentStudentRepository) {
         this.teacherRepository = teacherRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.contentRepository = contentRepository;
         this.daysRepository = daysRepository;
         this.studyPlanMapper = studyPlanMapper;
+        this.assignmentRepository = assignmentRepository;
+        this.assignmentService = assignmentService;
+        this.assignmentStudentRepository = assignmentStudentRepository;
     }
 
     public UUID createStudyPlan(StudyPlanRequestDTO studyPlanRequestDTO, String username){
@@ -142,6 +147,18 @@ public class LessonsService {
                 .stream()
                 .map(studyPlanMapper::toDTO)
                 .toList();
+    }
+
+    @Transactional
+    public void deleteStudyPlan(UUID studyPlanId) {
+        List<Assignment> assignments = assignmentRepository.findByStudyPlanId(studyPlanId);
+        if (!assignments.isEmpty()) {
+            for (Assignment assignment : assignments) {
+                assignmentStudentRepository.deleteAllByAssignmentId(assignment.getId());
+            }
+            assignmentRepository.deleteAll(assignments);
+        }
+        studyPlanRepository.deleteById(studyPlanId);
     }
 
 }
