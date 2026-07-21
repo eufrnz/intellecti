@@ -1,8 +1,10 @@
 package com.br.intellecti.service;
 
-import com.br.intellecti.dto.assignment.AssignmentRequestDTO;
-import com.br.intellecti.dto.assignment.AssignmentResponseDTO;
-import com.br.intellecti.dto.assignment.mapper.AssignmentMapper;
+import com.br.intellecti.dto.assignment.withStudents.request.AssignmentRequestDTO;
+import com.br.intellecti.dto.assignment.withStudents.response.AssignmentResponseDTO;
+import com.br.intellecti.dto.assignment.withStudents.mapper.AssignmentMapper;
+import com.br.intellecti.dto.assignment.withoutStudents.response.AssignmentStudentResponseDTO;
+import com.br.intellecti.dto.assignment.withoutStudents.response.mapper.AssignmentStudentMapper;
 import com.br.intellecti.models.enums.AssignmentStatus;
 import com.br.intellecti.models.lessons.Assignment;
 import com.br.intellecti.models.lessons.AssignmentStudent;
@@ -26,22 +28,26 @@ public class AssignmentService {
     private final StudentRepository studentRepository;
     private final AssignmentStudentRepository assignmentStudentRepository;
     private final AssignmentMapper assignmentMapper;
+    private final AssignmentStudentMapper assignmentStudentMapper;
 
 
-    public AssignmentService(AssignmentRepository assignmentRepository, TeacherRepository teacherRepository,
-                             StudyPlanRepository studyPlanRepository, StudentRepository studentRepository,
+    public AssignmentService(AssignmentRepository assignmentRepository,
+                             TeacherRepository teacherRepository,
+                             StudyPlanRepository studyPlanRepository,
+                             StudentRepository studentRepository,
                              AssignmentStudentRepository assignmentStudentRepository,
-                             AssignmentMapper assignmentMapper) {
+                             AssignmentMapper assignmentMapper,
+                             AssignmentStudentMapper assignmentStudentMapper) {
         this.assignmentRepository = assignmentRepository;
         this.teacherRepository = teacherRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.studentRepository = studentRepository;
         this.assignmentStudentRepository = assignmentStudentRepository;
         this.assignmentMapper = assignmentMapper;
+        this.assignmentStudentMapper = assignmentStudentMapper;
     }
 
-
-        public UUID createAssignment(String username, AssignmentRequestDTO assignmentRequestDTO){
+    public UUID createAssignment(String username, AssignmentRequestDTO assignmentRequestDTO){
             Teacher teacher = teacherRepository.findByUserUsername(username)
                     .orElseThrow(() -> new RuntimeException("Teacher not found."));
             StudyPlans studyPlan = studyPlanRepository.findById(assignmentRequestDTO.studyPlanId())
@@ -86,4 +92,12 @@ public class AssignmentService {
                     }
                 }
             }
+
+            public List<AssignmentStudentResponseDTO> studentAssignment(String username){
+                return assignmentStudentRepository.findByStudentUserUsername(username)
+                        .stream()
+                        .map(assignmentStudentMapper::toDTO)
+                        .toList();
+            }
+
     }
