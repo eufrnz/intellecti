@@ -127,7 +127,7 @@ export function TeacherDashboard({ navigate }: NavigationProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl lg:text-2xl" style={{fontWeight: 700, color: '#111827'}}>
-            Olá, {username} 👋
+            Hello, {username} 👋
           </h1>
           <p className="text-[#6B7280] text-sm mt-0.5">Aqui está o que está acontecendo com seus alunos hoje.</p>
         </div>

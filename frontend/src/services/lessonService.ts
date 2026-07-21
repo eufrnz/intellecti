@@ -16,16 +16,16 @@ export interface StudyPlanRequest {
 }
 
 export interface StudyPlanResponse {
-  id?: string;
+  id: string;
   title?: string;
   description?: string;
   studyPlanStatus?: string;
   days?: Array<{
-    id?: string;
+    id: string;
     title?: string;
     description?: string;
     content?: Array<{
-      id?: string;
+      id: string;
       title?: string;
       content?: string;
       orderIndex?: number;
@@ -115,3 +115,16 @@ export async function countMyStudyPlans(): Promise<number> {
 
   return response.json();
 }
+
+export async function deleteStudyPlan(studyPlanId: string): Promise<void> {
+  const response = await fetch(`${LESSONS_BASE_URL}/delete/${studyPlanId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `Erro ${response.status}: Não foi possível excluir o plano.`);
+  }
+}
+

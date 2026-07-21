@@ -23,9 +23,12 @@ interface AppShellNavProps {
 
 export function getCurrentUserIdentity() {
   const storedUsername = localStorage.getItem('username')?.trim();
-  const storedRole = localStorage.getItem('role')?.toUpperCase() || '';
+  const rawRole = localStorage.getItem('role')?.toUpperCase() || '';
 
-  const displayName = storedUsername || (storedRole.includes('TEACHER') ? 'Professor' : 'Estudante');
+  const isTeacher = rawRole.includes('TEACHER');
+
+  const displayName = storedUsername || (isTeacher ? 'Professor' : 'Estudante');
+  
   const initials = displayName
     .split(/\s+/)
     .filter(Boolean)
@@ -34,7 +37,7 @@ export function getCurrentUserIdentity() {
     .join('')
     .toUpperCase() || 'U';
 
-  const roleLabel = storedRole.includes('TEACHER') ? 'English Teacher' : 'English Student';
+  const roleLabel = isTeacher ? 'English Teacher' : 'English Student';
 
   return { displayName, initials, roleLabel };
 }
@@ -56,8 +59,16 @@ export function AppShellNav({
     if (isActiveItem) {
       return isActiveItem(id, currentView);
     }
-
     return currentView === id;
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('accessToken');
+    onNavigate('login');
   };
 
   return (
@@ -72,7 +83,7 @@ export function AppShellNav({
               <span className="text-white text-sm font-semibold">{initials}</span>
             </div>
             <div>
-              <div className="text-base" style={{ fontWeight: 700, color: THEME_COLORS.text }}>{title}</div>
+              <div className="text-base font-bold" style={{ color: THEME_COLORS.text }}>{title}</div>
               <div className="text-xs" style={{ color: THEME_COLORS.muted }}>{subtitle}</div>
             </div>
           </div>
@@ -105,19 +116,19 @@ export function AppShellNav({
       <div className="p-4" style={{ borderTop: `1px solid ${THEME_COLORS.border}` }}>
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{ background: THEME_COLORS.surface }}>
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm"
-            style={{ background: `linear-gradient(135deg, ${accent}, ${accent}dd)`, fontWeight: 700 }}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+            style={{ background: `linear-gradient(135deg, ${accent}, ${accent}dd)` }}
           >
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm truncate" style={{ fontWeight: 600, color: THEME_COLORS.text }}>{displayName}</div>
+            <div className="text-sm font-semibold truncate" style={{ color: THEME_COLORS.text }}>{displayName}</div>
             <div className="text-xs" style={{ color: THEME_COLORS.muted }}>{roleLabel}</div>
           </div>
           <button
-            onClick={() => onNavigate('login')}
-            className="text-[#9CA3AF] hover:text-[#EF4444] transition-colors"
-            title="Logout"
+            onClick={handleLogout}
+            className="text-[#9CA3AF] hover:text-[#EF4444] transition-colors p-1"
+            title="Sair"
           >
             <LogOut className="w-4 h-4" />
           </button>
