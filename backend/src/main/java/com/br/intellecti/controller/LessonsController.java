@@ -73,4 +73,10 @@ public class LessonsController {
         String teacherLogged = userData.username();
         return studyPlanService.getAllMyStudyPlans(teacherLogged);
     }
+
+    @DeleteMapping("/delete/{studyPlanId}")
+    public void deleteStudyPlan(@PathVariable UUID studyPlanId){
+
+        studyPlanService.deleteStudyPlan(studyPlanId);
+    }
 }

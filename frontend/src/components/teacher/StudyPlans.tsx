@@ -7,22 +7,14 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { NavigationProps } from '../../App';
-import { addContentToDay, addDayToStudyPlan, createStudyPlan, fetchStudyPlans, type StudyPlanResponse } from '../../services/lessonService';
-
-const staticPlans = [
-  {
-    id: 1, title: 'Business English A2→B1', description: 'A comprehensive course covering business vocabulary, email writing, and professional communication for intermediate learners.', status: 'active', days: 30, progress: 72, students: 24,
-  },
-  {
-    id: 2, title: 'Grammar Fundamentals', description: 'Master the essential grammar rules including tenses, conditionals, and complex sentence structures.', status: 'active', days: 21, progress: 45, students: 18,
-  },
-  {
-    id: 3, title: 'Pronunciation & Speaking', description: 'Improve pronunciation, accent reduction, and spoken English fluency through structured exercises.', status: 'draft', days: 14, progress: 0, students: 0,
-  },
-  {
-    id: 4, title: 'IELTS Preparation', description: 'Complete IELTS test preparation covering all four skills: Reading, Writing, Listening, and Speaking.', status: 'completed', days: 45, progress: 100, students: 32,
-  },
-];
+import { 
+  addContentToDay, 
+  addDayToStudyPlan, 
+  createStudyPlan, 
+  deleteStudyPlan, 
+  fetchStudyPlans, 
+  type StudyPlanResponse 
+} from '../../services/lessonService';
 
 const contentTypeConfig = {
   lesson: { icon: FileText, color: '#1E88E5', bg: '#EFF6FF', label: 'Lesson' },
@@ -60,7 +52,11 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
   const [showCreate, setShowCreate] = useState(currentView === 'teacher/create-plan');
   const [createStep, setCreateStep] = useState<1 | 2 | 3>(1);
   const [expandedDay, setExpandedDay] = useState<number | null>(1);
-  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  
+  // Estado para armazenar o UUID (string) do plano a ser deletado
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [editingContent, setEditingContent] = useState<{ dayId: number; contentId: number } | null>(null);
   const [editingText, setEditingText] = useState('');
 
@@ -73,16 +69,17 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const loadPlans = async () => {
-      try {
-        const data = await fetchStudyPlans();
-        setPlans(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const loadPlans = async () => {
+    try {
+      const data = await fetchStudyPlans();
+      setPlans(data);
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro ao carregar os planos de estudo.');
+    }
+  };
 
+  useEffect(() => {
     void loadPlans();
   }, []);
 
@@ -174,8 +171,7 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
         }
       }
 
-      const refreshedPlans = await fetchStudyPlans();
-      setPlans(refreshedPlans);
+      await loadPlans();
       toast.success('Study plan published successfully!');
       setShowCreate(false);
       setCreateStep(1);
@@ -189,6 +185,24 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
       toast.error(error.message || 'Unable to create study plan');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Handler para apagar o plano no backend
+  const handleDeletePlan = async () => {
+    if (!confirmDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteStudyPlan(confirmDelete);
+      toast.success('Plano de estudos excluído com sucesso!');
+      setConfirmDelete(null);
+      await loadPlans(); // Recarrega os planos atualizados
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Erro ao excluir o plano de estudos.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -523,7 +537,7 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
               {plan.days && plan.days.length > 0 && (
                 <div className="flex items-center gap-1.5 text-xs text-[#6B7280] mb-3">
                   <div className="flex -space-x-1">
-                    {Array.from({length: Math.min(3, plan.students)}).map((_, i) => (
+                    {Array.from({length: Math.min(3, plan.days?.length || 0)}).map((_, i) => (
                       <div
                         key={i}
                         className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-white text-[8px]"
@@ -568,9 +582,10 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
                   <Edit2 className="w-3.5 h-3.5"/> Edit
                 </button>
                 <button
-                  onClick={() => setConfirmDelete(Number(plan.id) || 0)}
+                  onClick={() => setConfirmDelete(plan.id)}
                   className="w-8 h-8 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-[#FEF2F2] hover:border-[#EF4444] transition-colors"
                   style={{color: '#9CA3AF'}}
+                  title="Delete Study Plan"
                 >
                   <Trash2 className="w-3.5 h-3.5"/>
                 </button>
@@ -663,15 +678,25 @@ export function StudyPlans({ currentView, navigate }: NavigationProps) {
               <h3 className="text-lg text-center mb-2" style={{fontWeight: 700, color: '#111827'}}>Delete Study Plan?</h3>
               <p className="text-sm text-[#6B7280] text-center mb-6">This action cannot be undone. All lessons and progress data will be permanently removed.</p>
               <div className="flex gap-3">
-                <button onClick={() => setConfirmDelete(null)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm" style={{fontWeight: 500, color: '#6B7280'}}>
+                <button 
+                  onClick={() => setConfirmDelete(null)} 
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm disabled:opacity-50" 
+                  style={{fontWeight: 500, color: '#6B7280'}}
+                >
                   Cancel
                 </button>
                 <button
-                  onClick={() => { toast.success('Plan deleted'); setConfirmDelete(null); }}
-                  className="flex-1 py-2.5 rounded-xl text-sm text-white"
+                  onClick={handleDeletePlan}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-xl text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50"
                   style={{background: '#EF4444', fontWeight: 600}}
                 >
-                  Delete
+                  {isDeleting ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    'Delete'
+                  )}
                 </button>
               </div>
             </motion.div>

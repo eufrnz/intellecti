@@ -3,7 +3,11 @@ package com.br.intellecti.models.users;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +27,34 @@ public class Student {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    @Column(name = "last_login_date")
+    private LocalDate lastLoginDate;
+    @ElementCollection
+    @CollectionTable(
+            name = "student_logged_days",
+            joinColumns = @JoinColumn(name = "student_id")
+    )
+    @Column(name = "logged_day")
+    private Set<LocalDate> loggedDays = new HashSet<>();
+
+    @Column(name = "streak")
+    private Integer streak = 0;
+
+    public LocalDate getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(LocalDate lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public Integer getStreak() {
+        return streak;
+    }
+
+    public void setStreak(Integer streak) {
+        this.streak = streak;
+    }
 
     public UUID getId() {
         return id;
@@ -63,4 +95,13 @@ public class Student {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public Set<LocalDate> getLoggedDays() {
+        return loggedDays;
+    }
+
+    public void setLoggedDays(Set<LocalDate> loggedDays) {
+        this.loggedDays = loggedDays;
+    }
 }
+

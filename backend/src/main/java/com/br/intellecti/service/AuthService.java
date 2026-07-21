@@ -30,14 +30,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
 
-    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {
+    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository, StudentService studentService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.teacherRepository = teacherRepository;
+        this.studentService = studentService;
     }
 
     public LoginResponse login(LoginRequest loginRequest){
@@ -49,6 +51,9 @@ public class AuthService {
         );
         User user = (User) authentication.getPrincipal();
         String token = tokenService.generateToken(user);
+        if(user.getRole() == Role.ROLE_STUDENT){
+            studentService.updateStudentStreak(user.getUsername());
+        }
         return new LoginResponse(
                 user.getUsername(),
                 token

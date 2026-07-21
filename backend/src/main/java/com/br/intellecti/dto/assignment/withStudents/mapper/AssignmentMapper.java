@@ -1,6 +1,6 @@
-package com.br.intellecti.dto.assignment.mapper;
+package com.br.intellecti.dto.assignment.withStudents.mapper;
 
-import com.br.intellecti.dto.assignment.AssignmentResponseDTO;
+import com.br.intellecti.dto.assignment.withStudents.response.AssignmentResponseDTO;
 import com.br.intellecti.models.lessons.Assignment;
 import org.springframework.stereotype.Component;
 

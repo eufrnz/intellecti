@@ -1,8 +1,8 @@
 package com.br.intellecti.controller;
 
 import com.br.intellecti.config.springSecurity.JWTUserData;
-import com.br.intellecti.dto.assignment.AssignmentRequestDTO;
-import com.br.intellecti.dto.assignment.AssignmentResponseDTO;
+import com.br.intellecti.dto.assignment.withStudents.request.AssignmentRequestDTO;
+import com.br.intellecti.dto.assignment.withStudents.response.AssignmentResponseDTO;
 import com.br.intellecti.service.AssignmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

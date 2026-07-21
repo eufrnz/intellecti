@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Flame, Calendar, BookOpen, Trophy, Clock, ChevronRight, Star, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import type { NavigationProps } from '../../App';
+import { fetchStudentMe } from '../../services/userService';
 
 const weeklyActivity = [
   { day: 'Mon', lessons: 3 }, { day: 'Tue', lessons: 5 }, { day: 'Wed', lessons: 2 },
@@ -20,12 +22,6 @@ const recentActivity = [
   { id: 2, action: 'Finished Lesson: Business Vocabulary', time: 'Yesterday', type: 'lesson', score: null },
   { id: 3, action: 'Submitted Exercise: Email Writing', time: 'Yesterday', type: 'exercise', score: 88 },
 ];
-
-const calendarDays = Array.from({ length: 31 }, (_, i) => ({
-  day: i + 1,
-  hasActivity: [1,3,4,5,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22].includes(i + 1),
-  isToday: i + 1 === 14,
-}));
 
 function CircularProgress({ percent, size = 120, strokeWidth = 10 }: { percent: number; size?: number; strokeWidth?: number }) {
   const radius = (size - strokeWidth) / 2;
@@ -60,6 +56,52 @@ function CircularProgress({ percent, size = 120, strokeWidth = 10 }: { percent: 
 }
 
 export function StudentDashboard({ navigate }: NavigationProps) {
+  const [streak, setStreak] = useState<number>(0);
+  const [loggedDaysSet, setLoggedDaysSet] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    async function loadStudentData() {
+      try {
+        const studentData = await fetchStudentMe();
+        setStreak(studentData.streak ?? 0);
+
+        if (studentData.loggedDays) {
+  const rawDays = Array.isArray(studentData.loggedDays) 
+    ? studentData.loggedDays 
+    : Array.from(studentData.loggedDays as Iterable<string | number>);
+
+  const daysArray = rawDays.map((item: string | number) => {
+    if (typeof item === 'string') {
+      if (item.includes('-')) {
+        const [, , day] = item.split('-');
+        return parseInt(day, 10);
+      }
+      return parseInt(item, 10);
+    }
+    return Number(item);
+  });
+
+  setLoggedDaysSet(new Set(daysArray));
+}
+      } catch (error) {
+        console.error('Erro ao carregar dados do estudante:', error);
+      }
+    }
+
+    void loadStudentData();
+  }, []);
+
+  const todayNum = new Date().getDate();
+
+  const calendarDays = Array.from({ length: 31 }, (_, i) => {
+    const dayNum = i + 1;
+    return {
+      day: dayNum,
+      hasActivity: loggedDaysSet.has(dayNum),
+      isToday: dayNum === todayNum,
+    };
+  });
+
   return (
     <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-5">
       {/* Welcome header */}
@@ -68,11 +110,11 @@ export function StudentDashboard({ navigate }: NavigationProps) {
           <h1 className="text-xl lg:text-2xl" style={{fontWeight: 700, color: '#111827'}}>
             Hey, Alex! 👋
           </h1>
-          <p className="text-[#6B7280] text-sm mt-0.5">Keep up the great work. You're on a 14-day streak!</p>
+          <p className="text-[#6B7280] text-sm mt-0.5">Keep up the great work. You're on a {streak}-day streak!</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{background: 'linear-gradient(135deg, #FFF7ED, #FFFBEB)'}}>
           <Flame className="w-5 h-5 text-orange-400"/>
-          <span className="text-base" style={{fontWeight: 700, color: '#111827'}}>14</span>
+          <span className="text-base" style={{fontWeight: 700, color: '#111827'}}>{streak}</span>
           <span className="text-xs text-[#6B7280]">streak</span>
         </div>
       </div>
@@ -125,7 +167,7 @@ export function StudentDashboard({ navigate }: NavigationProps) {
             { icon: BookOpen, label: 'Completed', value: '28', sub: 'lessons', color: '#1E88E5', bg: '#EFF6FF' },
             { icon: Trophy, label: 'Avg Grade', value: '91%', sub: 'score', color: '#22C55E', bg: '#F0FDF4' },
             { icon: Star, label: 'Points', value: '2,840', sub: 'earned', color: '#FFC107', bg: '#FFFBEB' },
-            { icon: Zap, label: 'Streak', value: '14d', sub: 'days', color: '#EF4444', bg: '#FEF2F2' },
+            { icon: Zap, label: 'Streak', value: `${streak}d`, sub: 'days', color: '#EF4444', bg: '#FEF2F2' },
           ].map(stat => (
             <div key={stat.label} className="bg-white rounded-2xl p-4 shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-50">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2" style={{background: stat.bg}}>
@@ -193,14 +235,15 @@ export function StudentDashboard({ navigate }: NavigationProps) {
 
         {/* Monthly calendar */}
         <div className="bg-white rounded-2xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-50">
-          <h3 className="text-base mb-3" style={{fontWeight: 600, color: '#111827'}}>July 2026</h3>
+          <h3 className="text-base mb-3" style={{fontWeight: 600, color: '#111827'}}>
+            {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+          </h3>
           <div className="grid grid-cols-7 gap-1 mb-1">
             {['S','M','T','W','T','F','S'].map((d, i) => (
               <div key={i} className="text-center text-[10px] text-[#9CA3AF]" style={{fontWeight: 500}}>{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1">
-            {/* Offset for July starting on Wednesday (index 3) */}
             {[0,1,2].map(i => <div key={`empty-${i}`}/>)}
             {calendarDays.map(({ day, hasActivity, isToday }) => (
               <div
