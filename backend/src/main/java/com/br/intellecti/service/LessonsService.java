@@ -42,9 +42,21 @@ public class LessonsService {
         Teacher teacher = teacherRepository.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
         StudyPlans studyPlans = new StudyPlans();
-        studyPlans.setTitle(studyPlanRequestDTO.title());
-        studyPlans.setDescription(studyPlanRequestDTO.description());
-        studyPlans.setStudyPlanStatus(studyPlanRequestDTO.studyPlanStatus());
+        if(studyPlanRequestDTO.title() != null){
+            studyPlans.setTitle(studyPlanRequestDTO.title());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(studyPlanRequestDTO.description() != null){
+            studyPlans.setDescription(studyPlanRequestDTO.description());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(studyPlanRequestDTO.studyPlanStatus() != null){
+            studyPlans.setStudyPlanStatus(studyPlanRequestDTO.studyPlanStatus());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         studyPlans.setTeacher(teacher);
         StudyPlans studyPlansSaved = studyPlanRepository.save(studyPlans);
         return studyPlansSaved.getId();
@@ -53,9 +65,21 @@ public class LessonsService {
         StudyPlans studyPlan = studyPlanRepository.findById(studyPlanId)
                 .orElseThrow(() -> new RuntimeException("Study plan not found."));
         Days day = new Days();
-        day.setNumber(dayRequestDTO.number());
-        day.setTitle(dayRequestDTO.title());
-        day.setDescription(dayRequestDTO.description());
+        if(dayRequestDTO.number() != null){
+            day.setNumber(dayRequestDTO.number());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(dayRequestDTO.title() != null){
+            day.setTitle(dayRequestDTO.title());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(dayRequestDTO.description() != null){
+            day.setDescription(dayRequestDTO.description());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         day.setStudyPlan(studyPlan);
         Days savedDay = daysRepository.save(day);
         return savedDay.getId();
@@ -65,9 +89,21 @@ public class LessonsService {
         Days day = daysRepository.findById(dayId)
                 .orElseThrow(() -> new RuntimeException("Day not found"));
         Contents contents = new Contents();
-        contents.setTitle(contentRequestDTO.title());
-        contents.setContent(contentRequestDTO.content());
-        contents.setOrderIndex(contentRequestDTO.orderIndex());
+        if(contentRequestDTO.title() != null){
+            contents.setTitle(contentRequestDTO.title());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(contentRequestDTO.content() != null){
+            contents.setContent(contentRequestDTO.content());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(contentRequestDTO.orderIndex() != null){
+            contents.setOrderIndex(contentRequestDTO.orderIndex());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         contents.setDay(day);
         contentRepository.save(contents);
     }

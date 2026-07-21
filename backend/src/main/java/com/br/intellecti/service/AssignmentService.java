@@ -10,8 +10,10 @@ import com.br.intellecti.models.lessons.StudyPlans;
 import com.br.intellecti.models.users.Student;
 import com.br.intellecti.models.users.Teacher;
 import com.br.intellecti.repository.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,5 +73,17 @@ public class AssignmentService {
                 return assignmentRepository.findByTeacherUserUsername(username).stream()
                         .map(assignmentMapper::toDTO)
                         .toList();
+            }
+
+            @Scheduled(cron = " 0 0 0 * * *")
+            public void closeAssignment(){
+                List<Assignment> assignment = assignmentRepository.findAll();
+
+                for (Assignment assignment1 : assignment){
+                    LocalDate closeDate = assignment1.getDueDate();
+                    if(LocalDate.now().isAfter(closeDate)){
+                        assignmentRepository.delete(assignment1);
+                    }
+                }
             }
     }
