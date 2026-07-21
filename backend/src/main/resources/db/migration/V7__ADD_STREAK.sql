@@ -1,0 +1,3 @@
+ALTER TABLE student
+    ADD COLUMN last_login_date DATE,
+ADD COLUMN streak INTEGER NOT NULL DEFAULT 0;

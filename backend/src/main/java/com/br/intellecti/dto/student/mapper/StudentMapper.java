@@ -10,7 +10,10 @@ public class StudentMapper {
     public StudentResponseGetAllDTO toDTO(Student student){
         return new StudentResponseGetAllDTO(
                 student.getId(),
-                student.getUser().getUsername()
+                student.getUser().getUsername(),
+                student.getStreak(),
+                student.getUser().getEmail(),
+                student.getLoggedDays()
         );
     }
 }

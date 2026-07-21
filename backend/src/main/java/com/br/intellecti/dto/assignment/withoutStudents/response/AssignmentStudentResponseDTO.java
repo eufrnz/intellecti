@@ -7,6 +7,7 @@ public record AssignmentStudentResponseDTO(
         UUID id,
         String studyPlanTitle,
         LocalDate availableAt,
-        LocalDate dueDate
+        LocalDate dueDate,
+        Double percentage
 ) {
 }

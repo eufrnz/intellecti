@@ -16,7 +16,8 @@ public class AssignmentStudentMapper {
                 assignment.getId(),
                 assignment.getAssignment().getStudyPlan().getTitle(),
                 assignment.getAssignment().getAvailableAt(),
-                assignment.getAssignment().getDueDate()
+                assignment.getAssignment().getDueDate(),
+                assignment.getPercentage()
         );
     }
 }

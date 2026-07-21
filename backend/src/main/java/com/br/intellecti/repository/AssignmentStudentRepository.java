@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface AssignmentStudentRepository extends JpaRepository<AssignmentStudent, UUID> {
     List<AssignmentStudent> findByStudentUserUsername(String username);
+    void deleteAllByAssignmentId(UUID uuid);
 }
