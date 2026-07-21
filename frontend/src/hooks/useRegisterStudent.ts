@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useInRouterContext, useNavigate } from "react-router-dom";
 import { registerStudent, type StudentRequest,  } from "../services/studentService";
 
-export function useRegisterStudent() {
-  const navigate = useNavigate();
+export function useRegisterStudent(navigateOverride?: (path: string) => void) {
+  const routerNavigate = useInRouterContext() ? useNavigate() : undefined;
+  const navigate = navigateOverride ?? routerNavigate;
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<StudentRequest>({
     firstName: "",
@@ -25,7 +26,7 @@ export function useRegisterStudent() {
     try {
       await registerStudent(formData);
       alert("Aluno cadastrado com sucesso!");
-      navigate("/"); 
+      navigate?.("/"); 
     } catch (error: any) {
       console.error("Erro ao conectar à API:", error);
       alert(`Erro no cadastro: ${error.message || "Não foi possível conectar ao servidor."}`);

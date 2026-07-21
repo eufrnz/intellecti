@@ -32,8 +32,6 @@ public class StudyPlans {
     private StudyPlanStatus studyPlanStatus;
     @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Days> days = new ArrayList<>();
-
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

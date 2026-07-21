@@ -12,6 +12,7 @@ import com.br.intellecti.models.users.Student;
 import com.br.intellecti.models.users.Teacher;
 import com.br.intellecti.models.users.User;
 import com.br.intellecti.repository.StudentRepository;
+import com.br.intellecti.repository.TeacherRepository;
 import com.br.intellecti.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,13 +29,15 @@ public class AuthService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
 
-    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService, StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
     }
 
     public LoginResponse login(LoginRequest loginRequest){
@@ -58,10 +61,27 @@ public class AuthService {
         }
 
         User user = new User();
-        user.setEmail(studentRequestDTO.email());
-        user.setPassword(passwordEncoder.encode(studentRequestDTO.password()));
+        if(studentRequestDTO.email() != null){
+            user.setEmail(studentRequestDTO.email());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(studentRequestDTO.password() != null){
+            String userPassword = studentRequestDTO.password();
+            if(userPassword.length() >= 8 && userPassword.matches(".*[^a-zA-Z0-9].*")){
+                user.setPassword(passwordEncoder.encode(studentRequestDTO.password()));
+            }else{
+                throw new RuntimeException("Password doesn't follow the rules.");
+            }
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         user.setRole(Role.ROLE_STUDENT);
-        user.setUsername(studentRequestDTO.username());
+        if(studentRequestDTO.username() != null){
+            user.setUsername(studentRequestDTO.username());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);
 
@@ -84,15 +104,33 @@ public class AuthService {
         }
 
         User user = new User();
-        user.setUsername(teacherRequestDTO.username());
-        user.setEmail(teacherRequestDTO.email());
-        user.setPassword(passwordEncoder.encode(teacherRequestDTO.password()));
+        if(teacherRequestDTO.username() != null){
+            user.setUsername(teacherRequestDTO.username());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(teacherRequestDTO.email() != null){
+            user.setEmail(teacherRequestDTO.email());
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
+        if(teacherRequestDTO.password() != null){
+            String userPassword = teacherRequestDTO.password();
+            if(userPassword.length() >= 8 && userPassword.matches(".*[^a-zA-Z0-9].*")){
+                user.setPassword(passwordEncoder.encode(teacherRequestDTO.password()));
+            }else{
+                throw new RuntimeException("Password doesn't follow the rules.");
+            }
+        }else{
+            throw new RuntimeException("Null input. Please write some text.");
+        }
         user.setRole(Role.ROLE_TEACHER);
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);
 
         Teacher teacher = new Teacher();
         teacher.setUser(user);
+        teacherRepository.save(teacher);
         return new TeacherResponseDTO(
                 teacher.getUser().getUsername(),
                 teacher.getUser().getEmail()

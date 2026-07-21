@@ -6,6 +6,7 @@ import com.br.intellecti.models.users.Teacher;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,10 @@ public class Assignment {
     private Teacher teacher;
 
     @Column(name = "available_at", nullable = false)
-    private LocalDateTime availableAt;
+    private LocalDate availableAt;
 
     @Column(name = "due_date", nullable = false)
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -72,19 +73,19 @@ public class Assignment {
         this.teacher = teacher;
     }
 
-    public LocalDateTime getAvailableAt() {
+    public LocalDate getAvailableAt() {
         return availableAt;
     }
 
-    public void setAvailableAt(LocalDateTime availableAt) {
+    public void setAvailableAt(LocalDate availableAt) {
         this.availableAt = availableAt;
     }
 
-    public LocalDateTime getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 

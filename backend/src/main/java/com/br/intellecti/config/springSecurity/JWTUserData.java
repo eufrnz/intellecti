@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record JWTUserData(
         UUID userId,
-        String email,
+        String username,
         String role
 ) {
 }

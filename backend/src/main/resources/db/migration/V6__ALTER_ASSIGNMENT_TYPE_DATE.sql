@@ -1,0 +1,3 @@
+ALTER TABLE assignments
+ALTER COLUMN available_at TYPE DATE,
+  ALTER COLUMN due_date TYPE DATE;
