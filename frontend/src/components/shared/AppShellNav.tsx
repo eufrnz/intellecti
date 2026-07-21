@@ -76,15 +76,13 @@ export function AppShellNav({
       {!compact && (
         <div className="p-6" style={{ borderBottom: `1px solid ${THEME_COLORS.border}` }}>
           <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${accent}, ${accent}dd)` }}
-            >
-              <span className="text-white text-sm font-semibold">{initials}</span>
+            {/* Logo SVG */}
+            <div className="w-10 h-10 ">
+              <img src='logo.svg' alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <div>
-              <div className="text-base font-bold" style={{ color: THEME_COLORS.text }}>{title}</div>
-              <div className="text-xs" style={{ color: THEME_COLORS.muted }}>{subtitle}</div>
+            <div className="min-w-0">
+              <div className="text-base font-bold truncate" style={{ color: THEME_COLORS.text }}>{title}</div>
+              <div className="text-xs truncate" style={{ color: THEME_COLORS.muted }}>{subtitle}</div>
             </div>
           </div>
         </div>
@@ -115,19 +113,20 @@ export function AppShellNav({
 
       <div className="p-4" style={{ borderTop: `1px solid ${THEME_COLORS.border}` }}>
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{ background: THEME_COLORS.surface }}>
+          {/* Avatar com as iniciais mantido para o usuário rodapé */}
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
             style={{ background: `linear-gradient(135deg, ${accent}, ${accent}dd)` }}
           >
             {initials}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold truncate" style={{ color: THEME_COLORS.text }}>{displayName}</div>
-            <div className="text-xs" style={{ color: THEME_COLORS.muted }}>{roleLabel}</div>
+            <div className="text-xs truncate" style={{ color: THEME_COLORS.muted }}>{roleLabel}</div>
           </div>
           <button
             onClick={handleLogout}
-            className="text-[#9CA3AF] hover:text-[#EF4444] transition-colors p-1"
+            className="text-[#9CA3AF] hover:text-[#EF4444] transition-colors p-1 flex-shrink-0"
             title="Sair"
           >
             <LogOut className="w-4 h-4" />
