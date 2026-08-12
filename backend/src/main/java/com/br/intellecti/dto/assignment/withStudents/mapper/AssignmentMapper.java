@@ -13,6 +13,7 @@ public class AssignmentMapper {
                 .map(assignmentStudent -> assignmentStudent.getStudent().getId().toString())
                 .toList();
         return new AssignmentResponseDTO(
+                assignment.getId(),
                 assignment.getStudyPlan().getTitle(),
                 assignment.getAvailableAt(),
                 assignment.getDueDate(),

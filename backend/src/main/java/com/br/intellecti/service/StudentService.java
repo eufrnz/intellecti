@@ -47,7 +47,6 @@ public class StudentService {
             student.setStreak(1);
         }
 
-
         student.setLastLoginDate(today);
         student.getLoggedDays().add(today);
         studentRepository.save(student);
