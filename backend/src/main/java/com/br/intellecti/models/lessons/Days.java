@@ -29,6 +29,8 @@ public class Days {
 
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contents> contents = new ArrayList<>();
+    @Column(name = "is_completed", nullable = false)
+    private Boolean isCompleted;
 
     public UUID getId() {
         return id;
@@ -76,5 +78,13 @@ public class Days {
 
     public void setContents(List<Contents> contents) {
         this.contents = contents;
+    }
+
+    public Boolean getCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(Boolean completed) {
+        isCompleted = completed;
     }
 }

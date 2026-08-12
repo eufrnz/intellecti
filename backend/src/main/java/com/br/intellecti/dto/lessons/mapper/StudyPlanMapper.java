@@ -30,7 +30,7 @@ public class StudyPlanMapper {
         );
     }
 
-    private DayResponseDTO toDayDTO(Days day) {
+    public DayResponseDTO toDayDTO(Days day) {
         return new DayResponseDTO(
                 day.getId(),
                 day.getNumber(),
@@ -47,15 +47,7 @@ public class StudyPlanMapper {
                 content.getId(),
                 content.getTitle(),
                 content.getContent(),
-                content.getOrderIndex(),
-                content.getQuestion() == null
-                        ? null
-                        : new QuestionResponseDTO(
-                        content.getQuestion().getId(),
-                        content.getQuestion().getCorrectAnswer(),
-                        content.getQuestion().getExplanation(),
-                        content.getQuestion().getPoints()
-                )
-        );
+                content.getOrderIndex()
+                );
     }
 }

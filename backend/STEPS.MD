@@ -1,0 +1,1 @@
+NEED TO CHANGE "is_completed" on relation "days" with a null option.
