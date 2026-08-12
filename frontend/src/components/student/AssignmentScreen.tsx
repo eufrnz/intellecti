@@ -37,11 +37,11 @@ export function AssignmentScreen({ navigate }: NavigationProps) {
   };
 
   const handleAssignmentClick = (assignmentId: string) => {
-  if (navigate) {
-    // Força o TypeScript a aceitar a string dinâmica
-    navigate(`student/assignment/${assignmentId}` as AppView);
-  }
-};
+    if (navigate) {
+      // Navega para a tela do plano passando o ID da atribuição
+      navigate(`student/assignment/${assignmentId}` as AppView, { assignmentId });
+    }
+  };
 
   if (loading) {
     return (

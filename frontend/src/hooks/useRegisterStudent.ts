@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useInRouterContext, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { registerStudent, type StudentRequest,  } from "../services/studentService";
 
 export function useRegisterStudent(navigateOverride?: (path: string) => void) {
@@ -25,11 +26,11 @@ export function useRegisterStudent(navigateOverride?: (path: string) => void) {
 
     try {
       await registerStudent(formData);
-      alert("Aluno cadastrado com sucesso!");
+      toast.success("Aluno cadastrado com sucesso!");
       navigate?.("/"); 
     } catch (error: any) {
       console.error("Erro ao conectar à API:", error);
-      alert(`Erro no cadastro: ${error.message || "Não foi possível conectar ao servidor."}`);
+      toast.error(error.message || "Erro no cadastro do aluno.");
     } finally {
       setIsLoading(false);
     }

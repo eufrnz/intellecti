@@ -10,12 +10,24 @@ import { buttonVariants } from "./button";
 function Calendar({
   className,
   classNames,
-  showOutsideDays = true,
+  showOutsideDays = false,
+  month: monthProp,
+  defaultMonth,
   ...props
 }: React.ComponentProps<typeof DayPicker>) {
+  const [month, setMonth] = React.useState<Date>(() => defaultMonth ?? new Date());
+
+  const handleMonthChange = React.useCallback((newMonth?: Date) => {
+    if (newMonth) {
+      setMonth(newMonth);
+    }
+  }, []);
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      month={monthProp ?? month}
+      onMonthChange={handleMonthChange}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
