@@ -1,9 +1,12 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: intellecti
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/intellecti
+    url: ${DATABASE_URL}
     username: ${DATABASE_NAME}
     password: ${DATABASE_PASSWORD}
   jpa:
