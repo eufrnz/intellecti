@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Flame, Calendar, BookOpen, Trophy, Clock, ChevronRight, Star, Zap } from 'lucide-react';
+import { ArrowRight, Flame, Calendar, BookOpen, Trophy, Clock, ChevronLeft, ChevronRight, Star, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import type { NavigationProps } from '../../App';
 import { fetchStudentMe } from '../../services/userService';
@@ -57,7 +57,8 @@ function CircularProgress({ percent, size = 120, strokeWidth = 10 }: { percent: 
 
 export function StudentDashboard({ navigate }: NavigationProps) {
   const [streak, setStreak] = useState<number>(0);
-  const [loggedDaysSet, setLoggedDaysSet] = useState<Set<number>>(new Set());
+  const [loggedFullDates, setLoggedFullDates] = useState<Set<string>>(new Set());
+  const [loggedDayNumbers, setLoggedDayNumbers] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     async function loadStudentData() {
@@ -66,23 +67,36 @@ export function StudentDashboard({ navigate }: NavigationProps) {
         setStreak(studentData.streak ?? 0);
 
         if (studentData.loggedDays) {
-  const rawDays = Array.isArray(studentData.loggedDays) 
-    ? studentData.loggedDays 
-    : Array.from(studentData.loggedDays as Iterable<string | number>);
+          const rawDays = Array.isArray(studentData.loggedDays)
+            ? studentData.loggedDays
+            : Array.from(studentData.loggedDays as Iterable<string | number>);
 
-  const daysArray = rawDays.map((item: string | number) => {
-    if (typeof item === 'string') {
-      if (item.includes('-')) {
-        const [, , day] = item.split('-');
-        return parseInt(day, 10);
-      }
-      return parseInt(item, 10);
-    }
-    return Number(item);
-  });
+          const fullDates = new Set<string>();
+          const dayNumbers = new Set<number>();
 
-  setLoggedDaysSet(new Set(daysArray));
-}
+          rawDays.forEach((item: string | number) => {
+            if (typeof item === 'string') {
+              const trimmed = item.trim();
+              const normalized = trimmed.replace(/\//g, '-');
+
+              if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(normalized)) {
+                const [year, month, day] = normalized.split('-');
+                const iso = `${year}-${String(Number(month)).padStart(2, '0')}-${String(Number(day)).padStart(2, '0')}`;
+                fullDates.add(iso);
+              } else {
+                const numberValue = Number(trimmed);
+                if (!Number.isNaN(numberValue) && Number.isFinite(numberValue)) {
+                  dayNumbers.add(numberValue);
+                }
+              }
+            } else if (typeof item === 'number' && Number.isFinite(item)) {
+              dayNumbers.add(item);
+            }
+          });
+
+          setLoggedFullDates(fullDates);
+          setLoggedDayNumbers(dayNumbers);
+        }
       } catch (error) {
         console.error('Erro ao carregar dados do estudante:', error);
       }
@@ -91,16 +105,48 @@ export function StudentDashboard({ navigate }: NavigationProps) {
     void loadStudentData();
   }, []);
 
-  const todayNum = new Date().getDate();
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => new Date());
 
-  const calendarDays = Array.from({ length: 31 }, (_, i) => {
-    const dayNum = i + 1;
-    return {
-      day: dayNum,
-      hasActivity: loggedDaysSet.has(dayNum),
-      isToday: dayNum === todayNum,
-    };
+  const today = new Date();
+  const monthYearLabel = calendarMonth.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
   });
+
+  const daysInMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0).getDate();
+  const firstWeekday = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1).getDay();
+
+  const calendarDays = useMemo(() => {
+    const currentYear = calendarMonth.getFullYear();
+    const currentMonth = calendarMonth.getMonth();
+    const useDayNumbersFallback = loggedFullDates.size === 0;
+
+    return Array.from({ length: daysInMonth }, (_, i) => {
+      const dayNum = i + 1;
+      const date = new Date(currentYear, currentMonth, dayNum);
+      const isoDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const isToday =
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate();
+
+      return {
+        day: dayNum,
+        hasActivity:
+          loggedFullDates.has(isoDate) ||
+          (useDayNumbersFallback && loggedDayNumbers.has(dayNum)),
+        isToday,
+      };
+    });
+  }, [calendarMonth, daysInMonth, loggedFullDates, loggedDayNumbers, today]);
+
+  const previousMonth = () => {
+    setCalendarMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1));
+  };
+
+  const nextMonth = () => {
+    setCalendarMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1));
+  };
 
   return (
     <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-5">
@@ -235,16 +281,36 @@ export function StudentDashboard({ navigate }: NavigationProps) {
 
         {/* Monthly calendar */}
         <div className="bg-white rounded-2xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-50">
-          <h3 className="text-base mb-3" style={{fontWeight: 600, color: '#111827'}}>
-            {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base" style={{fontWeight: 600, color: '#111827'}}>{monthYearLabel}</h3>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={previousMonth}
+                className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 text-[#6B7280] shadow-sm hover:bg-gray-50"
+                aria-label="Previous month"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={nextMonth}
+                className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 text-[#6B7280] shadow-sm hover:bg-gray-50"
+                aria-label="Next month"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-7 gap-1 mb-1">
             {['S','M','T','W','T','F','S'].map((d, i) => (
               <div key={i} className="text-center text-[10px] text-[#9CA3AF]" style={{fontWeight: 500}}>{d}</div>
             ))}
           </div>
+
           <div className="grid grid-cols-7 gap-1">
-            {[0,1,2].map(i => <div key={`empty-${i}`}/>)}
+            {Array.from({ length: firstWeekday }).map((_, index) => (
+              <div key={`empty-${index}`} />
+            ))}
             {calendarDays.map(({ day, hasActivity, isToday }) => (
               <div
                 key={day}

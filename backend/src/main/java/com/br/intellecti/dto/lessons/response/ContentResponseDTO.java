@@ -6,7 +6,5 @@ public record ContentResponseDTO(
         UUID id,
         String title,
         String content,
-        Integer orderIndex,
-        QuestionResponseDTO question
-) {
+        Integer orderIndex) {
 }
