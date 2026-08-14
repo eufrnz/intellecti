@@ -212,49 +212,13 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
               <p className="text-sm" style={{color: THEME_COLORS.muted}}>Sign in to continue your learning journey</p>
             </div>
 
-            {/* Demo quick login buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <button
-                type="button"
-                onClick={() => {
-                  const demoUsername = 'teacher';
-                  const demoPassword = 'password';
-                  const syntheticEvent = { preventDefault: () => undefined } as React.FormEvent;
-                  handleLoginChange({ target: { name: 'username', value: demoUsername } } as React.ChangeEvent<HTMLInputElement>);
-                  handleLoginChange({ target: { name: 'password', value: demoPassword } } as React.ChangeEvent<HTMLInputElement>);
-                  void handleLoginSubmit(syntheticEvent);
-                }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors text-sm"
-                style={{fontWeight: 500, borderColor: `${THEME_COLORS.blue}33`, backgroundColor: `${THEME_COLORS.blue}10`, color: THEME_COLORS.blue}}
-              >
-                <GraduationCap className="w-4 h-4" />
-                Teacher Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const demoUsername = 'student';
-                  const demoPassword = 'password';
-                  const syntheticEvent = { preventDefault: () => undefined } as React.FormEvent;
-                  handleLoginChange({ target: { name: 'username', value: demoUsername } } as React.ChangeEvent<HTMLInputElement>);
-                  handleLoginChange({ target: { name: 'password', value: demoPassword } } as React.ChangeEvent<HTMLInputElement>);
-                  void handleLoginSubmit(syntheticEvent);
-                }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors text-sm"
-                style={{fontWeight: 500, borderColor: `${THEME_COLORS.red}33`, backgroundColor: `${THEME_COLORS.red}15`, color: THEME_COLORS.red}}
-              >
-                <User className="w-4 h-4" />
-                Student Demo
-              </button>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
+              <span className="text-sm" style={{color: THEME_COLORS.muted}}>or sign in with email</span>
+              <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
             </div>
 
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
-                <span className="text-sm" style={{color: THEME_COLORS.muted}}>or sign in with email</span>
-                <div className="flex-1 h-px" style={{backgroundColor: THEME_COLORS.border}}/>
-            </div>
-
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
               <div>
                 <label className="block text-sm mb-1.5" style={{fontWeight: 500, color: '#374151'}}>Username</label>
                 <div className="relative">
@@ -459,7 +423,7 @@ export function AuthPages({ currentView, navigate, setUserRole }: AuthPagesProps
                 </div>
               </div>
 
-              <form onSubmit={handleRegister} className="space-y-4">
+              <form onSubmit={handleRegister} className="space-y-4" autoComplete="off">
                 {selectedRole === 'student' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>

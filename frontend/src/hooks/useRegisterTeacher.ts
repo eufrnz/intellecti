@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useInRouterContext, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { registerTeacher, type TeacherRequest, } from "../services/teacherService";
 
 export function useRegisterTeacher(navigateOverride?: (path: string) => void) {
@@ -23,11 +24,11 @@ export function useRegisterTeacher(navigateOverride?: (path: string) => void) {
 
     try {
       await registerTeacher(formData);
-      alert("Professor cadastrado com sucesso!");
+      toast.success("Professor cadastrado com sucesso!");
       navigate?.("/"); // Redireciona para o login após sucesso
     } catch (error: any) {
       console.error("Erro ao conectar à API:", error);
-      alert(`Erro no cadastro: ${error.message || "Não foi possível conectar ao servidor."}`);
+      toast.error(error.message || "Erro no cadastro do professor.");
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useInRouterContext, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "sonner";
 import { loginUser, type LoginRequest } from "../services/authService";
 import { AUTH_ROLES, LOCAL_STORAGE_KEYS, normalizeRole } from "../constants/auth";
 
@@ -46,15 +47,15 @@ export function useLogin(navigateOverride?: (path: string) => void) {
         } else if (userRole === AUTH_ROLES.TEACHER) {
           navigate?.("/teacher/home");
         } else {
-          alert("Usuário não possui uma role válida de acesso.");
+          toast.error("Usuário não possui uma role válida de acesso.");
           navigate?.("/");
         }
       } else {
-        alert("Erro: Token não recebido do servidor.");
+        toast.error("Erro: Token não recebido do servidor.");
       }
     } catch (error: any) {
       console.error("Erro ao fazer login:", error);
-      alert(error.message || "Não foi possível conectar ao servidor.");
+      toast.error(error.message || "Não foi possível conectar ao servidor.");
     } finally {
       setIsLoading(false);
     }

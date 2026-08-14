@@ -1,23 +1,22 @@
 import { LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { AppView } from '../../App';
 import { THEME_COLORS } from '../../constants/theme';
 
 export interface AppShellNavItem {
-  id: AppView | string;
+  id: string;
   label: string;
   icon: LucideIcon;
 }
 
-interface AppShellNavProps {
+export interface AppShellNavProps {
   items: AppShellNavItem[];
-  currentView: AppView;
-  onNavigate: (view: AppView) => void;
+  currentPath: string;
+  onNavigate: (view: string) => void;
   onCloseMobile?: () => void;
   title: string;
   subtitle: string;
   accent: string;
-  isActiveItem?: (id: string, currentView: AppView) => boolean;
+  isActiveItem?: (id: string, currentPath: string) => boolean;
   compact?: boolean;
 }
 
@@ -44,7 +43,7 @@ export function getCurrentUserIdentity() {
 
 export function AppShellNav({
   items,
-  currentView,
+  currentPath,
   onNavigate,
   onCloseMobile,
   title,
@@ -57,9 +56,9 @@ export function AppShellNav({
 
   const isActive = (id: string) => {
     if (isActiveItem) {
-      return isActiveItem(id, currentView);
+      return isActiveItem(id, currentPath);
     }
-    return currentView === id;
+    return currentPath === id;
   };
 
   const handleLogout = () => {
@@ -68,7 +67,7 @@ export function AppShellNav({
     localStorage.removeItem('role');
     localStorage.removeItem('jwt');
     localStorage.removeItem('accessToken');
-    onNavigate('login');
+    onNavigate('/login');
   };
 
   return (
@@ -78,7 +77,7 @@ export function AppShellNav({
           <div className="flex items-center gap-3">
             {/* Logo SVG */}
             <div className="w-10 h-10 ">
-              <img src='logo.svg' alt="Logo" className="w-full h-full object-contain" />
+              <img src='/logo.svg' alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="min-w-0">
               <div className="text-base font-bold truncate" style={{ color: THEME_COLORS.text }}>{title}</div>
@@ -95,7 +94,7 @@ export function AppShellNav({
             <button
               key={String(id)}
               onClick={() => {
-                onNavigate(id as AppView);
+                onNavigate(id);
                 onCloseMobile?.();
               }}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left"
