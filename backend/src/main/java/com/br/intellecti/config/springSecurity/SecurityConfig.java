@@ -33,8 +33,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers( "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "https://intellecti.onrender.com/*"
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated()
